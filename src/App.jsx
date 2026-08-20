@@ -95,7 +95,7 @@ function App() {
     }, 2000);
 
     setTimeout(() => {
-      let score;
+      let score = gameInfo.score;
       if (youPicked === housePicked) {
         setGameInfo((prev) => ({ ...prev, msg: "Draw!" }));
       } else if (
