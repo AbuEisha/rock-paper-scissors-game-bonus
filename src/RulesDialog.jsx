@@ -11,7 +11,7 @@ export default function RulesDialog({ open, handleClose }) {
       role="rulesdialog"
       sx={{
         "& .MuiPaper-root": {
-          width: { sm: "400px" },
+          width: { xs: "100%", sm: "400px" },
           flexDirection: { sm: "row" },
           rowGap: { sm: "1.5rem" },
           flexWrap: { sm: "wrap" },
@@ -52,7 +52,7 @@ export default function RulesDialog({ open, handleClose }) {
           component="img"
           src={rulesImg}
           alt="Rules Image"
-          sx={{ maxWidth: "100%" }}
+          sx={{ display: "block", maxWidth: "100%", marginInline: "auto" }}
         />
       </Box>
     </Dialog>
