@@ -7,8 +7,6 @@ export default function RulesDialog({ open, handleClose }) {
     <Dialog
       open={open}
       aria-labelledby="rules-dialog-title"
-      aria-describedby="rules-dialog-description"
-      role="rulesdialog"
       sx={{
         "& .MuiPaper-root": {
           width: { xs: "100%", sm: "400px" },
@@ -44,14 +42,14 @@ export default function RulesDialog({ open, handleClose }) {
         onClick={handleClose}
         sx={{ padding: 0, order: { xs: 3, sm: 2 } }}
       >
-        <Box component="img" src={closeIcon} alt="Close Icon" />
+        <Box component="img" src={closeIcon} alt="" />
       </IconButton>
 
       <Box sx={{ width: "100%", order: { xs: 2, sm: 3 } }}>
         <Box
           component="img"
           src={rulesImg}
-          alt="Rules Image"
+          alt="Game rules diagram: Rock beats Scissors and Lizard, Scissors beats Paper and Lizard, Paper beats Rock and Spock, Lizard beats Spock and Paper, Spock beats Scissors and Rock"
           sx={{ display: "block", maxWidth: "100%", marginInline: "auto" }}
         />
       </Box>

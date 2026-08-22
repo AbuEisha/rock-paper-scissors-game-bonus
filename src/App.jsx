@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { visuallyHidden } from "@mui/utils";
 import "./App.css";
 
 import logoIcon from "./assets/images/logo-bonus.svg";
@@ -56,22 +57,22 @@ function App() {
   const [gameInfo, setGameInfo] = useState({
     you: null,
     house: null,
-    score: 0,
+    score: Number(localStorage.getItem("gameScore")) || 0,
     msg: null,
   });
 
   const [openRulesDialog, setOpenRulesDialog] = useState(false);
 
-  useEffect(() => {
-    const getScore = () => {
-      setGameInfo((prev) => ({
-        ...prev,
-        score: JSON.parse(localStorage.getItem("gameScore")) || 0,
-      }));
-    };
+  const gridRef = useRef(null);
 
-    getScore();
-  }, []);
+  useEffect(() => {
+    localStorage.setItem("gameScore", JSON.stringify(gameInfo.score));
+  }, [gameInfo.score]);
+
+  useEffect(() => {
+    if (gameInfo.you === null)
+      gridRef.current?.querySelector("button")?.focus();
+  }, [gameInfo.you]);
 
   const handleStartGame = (youPicked) => {
     const rules = {
@@ -95,27 +96,23 @@ function App() {
     }, 2000);
 
     setTimeout(() => {
-      let score = gameInfo.score;
       if (youPicked === housePicked) {
         setGameInfo((prev) => ({ ...prev, msg: "Draw!" }));
       } else if (
         rules[youPicked.toLowerCase()].includes(housePicked.toLowerCase())
       ) {
-        score = gameInfo.score + 1;
         setGameInfo((prev) => ({
           ...prev,
           msg: "You Win",
-          score: score,
+          score: gameInfo.score + 1,
         }));
       } else {
-        score = gameInfo.score - 1;
         setGameInfo((prev) => ({
           ...prev,
           msg: "You Lose",
-          score: score,
+          score: gameInfo.score - 1,
         }));
       }
-      localStorage.setItem("gameScore", JSON.stringify(score));
     }, 3000);
   };
 
@@ -127,11 +124,13 @@ function App() {
     setOpenRulesDialog((prev) => !prev);
   };
   return (
-    <Box
+    <Stack
       component="main"
       sx={{
+        minHeight: "100vh",
+        backgroundImage:
+          "radial-gradient(circle at top center,hsl(214, 47%, 23%),hsl(237, 48%, 15%))",
         paddingBlock: { xs: "2rem 56px", sm: "2rem", md: "3rem 2rem" },
-        height: { xs: "750px", sm: "768px" },
         position: "relative",
       }}
     >
@@ -140,7 +139,7 @@ function App() {
           position: "relative",
           zIndex: 4,
           marginInline: { xs: "1.75rem", md: "auto" },
-          maxWidth: { xs: "100%", md: "702px" },
+          width: { xs: "calc(100% - 3.5rem)", md: "702px" },
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
@@ -150,12 +149,14 @@ function App() {
           borderRadius: { xs: "8px", sm: "16px" },
         }}
       >
-        <Box
-          component="img"
-          src={logoIcon}
-          alt="Logo Icon"
-          sx={{ display: "block", width: { xs: "55px", sm: "auto" } }}
-        />
+        <Box component="h1" sx={{ margin: 0 }}>
+          <Box
+            component="img"
+            src={logoIcon}
+            alt="Rock, Paper, Scissors, Lizard, Spock"
+            sx={{ display: "block", width: { xs: "55px", sm: "auto" } }}
+          />
+        </Box>
         <Stack
           sx={{
             alignItems: "center",
@@ -181,6 +182,7 @@ function App() {
           </Typography>
           <Typography
             variant="h1"
+            component="p"
             sx={{
               fontSize: { xs: "2.5rem", sm: "4rem" },
               fontWeight: 700,
@@ -196,7 +198,7 @@ function App() {
       <Stack
         sx={{
           justifyContent: "space-between",
-          height: { xs: "calc(100% - 102px)", sm: "calc(100% - 152px)" },
+          flex: 1,
         }}
       >
         {!gameInfo.you && (
@@ -212,7 +214,7 @@ function App() {
             <Box
               component="img"
               src={pentagonBg}
-              alt="Pentagon Background"
+              alt=""
               sx={{
                 position: "absolute",
                 width: { xs: "224px", sm: "auto" },
@@ -257,6 +259,10 @@ function App() {
                         xs: `0px 4px 0px ${choice.shadowColor}, 0px 4px 3px black`,
                         sm: `0px 7px 0px ${choice.shadowColor}, 0px 7px 3px black`,
                       },
+                      "&.Mui-focusVisible": {
+                        outline: "3px solid white",
+                        outlineOffset: "6px",
+                      },
                     }}
                   >
                     <Stack
@@ -277,7 +283,7 @@ function App() {
                       <Box
                         component="img"
                         src={choice.icon}
-                        alt={`${choice.name} Icon`}
+                        alt=""
                         sx={{
                           display: "block",
                           width: { xs: "34px", sm: "auto" },
@@ -374,7 +380,7 @@ function App() {
                           <Box
                             component="img"
                             src={choice.icon}
-                            alt={`${choice.name} Icon`}
+                            alt={`You Picked ${choice.name}`}
                             sx={{ display: "block", width: { md: "102px" } }}
                           />
                         </Stack>
@@ -429,6 +435,11 @@ function App() {
                 >
                   Play Again
                 </Button>
+
+                <Box role="status" aria-live="polite" sx={visuallyHidden}>
+                  {gameInfo.house &&
+                    `The house picked ${gameInfo.house}. ${gameInfo.msg}`}
+                </Box>
               </Stack>
             )}
             <Stack
@@ -521,7 +532,7 @@ function App() {
                           <Box
                             component="img"
                             src={choice.icon}
-                            alt={`${choice.name} Icon`}
+                            alt={`House Picked ${choice.name}`}
                             sx={{ display: "block", width: { md: "102px" } }}
                           />
                         </Stack>
@@ -532,33 +543,43 @@ function App() {
             </Stack>
           </Stack>
         )}
+
+        <Box
+          sx={{
+            paddingInline: "32px",
+            textAlign: { xs: "center", sm: "end" },
+            position: "relative",
+            zIndex: 4,
+          }}
+        >
+          <Button
+            disableRipple
+            onClick={handleToggleRulesDialog}
+            sx={{
+              border: "2px solid",
+              borderColor: "divider",
+              width: "130px",
+              height: "42px",
+              color: "white",
+              letterSpacing: "3px",
+              borderRadius: "8px",
+              "&.Mui-focusVisible": {
+                borderColor: "white",
+                backgroundColor: "white",
+                color: "text.primary",
+              },
+            }}
+          >
+            Rules
+          </Button>
+        </Box>
       </Stack>
-      <Button
-        disableRipple
-        onClick={handleToggleRulesDialog}
-        sx={{
-          position: "absolute",
-          zIndex: 4,
-          bottom: { xs: "56px", sm: "32px" },
-          left: { xs: "50%", sm: "auto" },
-          right: { sm: "32px" },
-          transform: { xs: "translateX(-50%)", sm: "translateX(0)" },
-          border: "2px solid",
-          borderColor: "divider",
-          width: "130px",
-          height: "42px",
-          color: "white",
-          letterSpacing: "3px",
-          borderRadius: "8px",
-        }}
-      >
-        Rules
-      </Button>
+
       <RulesDialog
         open={openRulesDialog}
         handleClose={handleToggleRulesDialog}
       />
-    </Box>
+    </Stack>
   );
 }
 

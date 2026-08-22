@@ -1,19 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&display=swap");
-
-:root {
-  --first-gradient: hsl(214, 47%, 23%);
-  --second-gradient: hsl(237, 48%, 15%);
-}
 * {
   box-sizing: border-box;
   margin: 0;
-}
-
-body {
-  height: 100vh;
-  background-image: radial-gradient(
-    circle at top center,
-    var(--first-gradient),
-    var(--second-gradient)
-  );
 }
