@@ -29,7 +29,7 @@ Users should be able to:
 
 ### Links
 
-- [Solution URL Here](https://github.com/AbuEisha/front-end-mentor-challenges/tree/rock-paper-scissors-bonus)
+- [Solution URL Here](https://github.com/AbuEisha/rock-paper-scissors-game-bonus)
 - [Live Site URL Here](https://rock-paper-scissors-bonus.pages.dev/)
 
 ## My process
