@@ -93,7 +93,7 @@ function App() {
         ...prev,
         house: housePicked,
       }));
-    }, 2000);
+    }, 700);
 
     setTimeout(() => {
       if (youPicked === housePicked) {
@@ -113,7 +113,7 @@ function App() {
           score: gameInfo.score - 1,
         }));
       }
-    }, 3000);
+    }, 1400);
   };
 
   const handleRestartGame = () => {
